@@ -1,3 +1,8 @@
+# Layer 1: Fault Injection Subsystem
+
+## Architecture Hierarchy
+
+```
 Layer 1: Fault Injection Subsystem
 │
 ├── fault_controller
@@ -25,19 +30,20 @@ Layer 1: Fault Injection Subsystem
 └── fault_sequencer
     ├── Inputs: start_fault, duration_reg
     └── Outputs: fault_active, fault_done
+```
 
+## Block Diagram
 
-
-diagram:
-                          Layer 1: Fault Injection Subsystem
-      ┌──────────────────────────────────────────────────────────────────────────────────────────────┐
-      │                                                                                               │
-│   ┌──────────────────────┐                                                                    │
-│   │   Layer 4            │                                                                    │
-│   │ (Control Layer)      │                                                                    │
-│   └──────────┬───────────┘                                                                    │
-│              │ fault_type, duration, target_clock, trigger, recovery_en                       │
-│              ▼                                                                                │
+```
+ Layer 1: Fault Injection Subsystem
+  ┌──────────────────────────────────────────────────────────────────────────────────────────────┐
+  │                                                                                               │
+  │   ┌──────────────────────┐                                                                    │
+  │   │   Layer 4            │                                                                    │
+  │   │ (Control Layer)      │                                                                    │
+  │   └──────────┬───────────┘                                                                    │
+  │              │ fault_type, duration, target_clock, trigger, recovery_en                       │
+  │              ▼                                                                                │
 │   ┌──────────────────────┐      start_fault      ┌──────────────────────────────┐            │
 │   │  fault_controller    │──────────────────────►│     fault_sequencer          │            │
 │   │                      │                       │                              │            │
@@ -67,3 +73,30 @@ diagram:
 │                                    clk_faulty (to Layer 2)                                    │
 │                                                                                               │
 └──────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+## Component Descriptions
+
+### fault_controller
+- **Role**: Main FSM + configuration interface
+- **States**: 5-state FSM
+- **Key Responsibilities**: Register management, fault type selection, duration control
+
+### clock_fault_generator
+- **Parameterized**: One instance per clock domain
+- **States**: 6-state FSM
+- **Outputs**: Faulty clock (clk_faulty)
+
+### Fault Injection Modules
+All modules are selected via internal multiplexer based on `fault_type_reg`:
+- **stop_high_logic**: Hold clock at high level
+- **stop_low_logic**: Hold clock at low level
+- **missing_pulse_logic**: Remove clock pulses
+- **duty_distortion**: Alter clock duty cycle
+- **jitter_generator**: Add timing jitter
+- **recovery_logic**: Enable graceful fault recovery
+
+### fault_sequencer
+- **Role**: Timing and sequence control
+- **Inputs**: start_fault signal, duration configuration
+- **Outputs**: fault_active, fault_done signals
