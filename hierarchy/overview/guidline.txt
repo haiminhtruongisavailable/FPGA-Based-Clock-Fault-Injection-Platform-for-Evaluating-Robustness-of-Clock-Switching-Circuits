@@ -1,0 +1,8 @@
+From → To  |  Signal / Data       |    Purpose
+───────────  ──────────────────────  ─────────────────────────────
+Layer 1 → 2 | faulty_clock           |  Corrupted clocks for testing
+Layer 2 → 3 | Switched clock outputs |  Data to be monitored
+Layer 3 → 4 | Measurement results    | Glitch count, latency, etc.
+Layer 4 → 1 | Fault configuration    | What fault, duration, trigger
+Layer 4 → 3 | reset/read             | Control monitoring
+Layer 4 → 1 | Feedback loop          | Next fault scenario
