@@ -1,0 +1,2 @@
+# FPGA-Based-Clock-Fault-Injection-Platform-for-Evaluating-Robustness-of-Clock-Switching-Circuits
+Contribution 1: Design of an FPGA-based platform for controlled injection of eight clock fault types. Contribution 2: Development of online monitors for glitch detection, stuck output, enable overlap, and latency measurement. Contribution 3: Quantitative robustness comparison of four clock switching architectures using the proposed platform.
