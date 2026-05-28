@@ -35,15 +35,15 @@ Layer 1: Fault Injection Subsystem
 ## Block Diagram
 
 ```
- Layer 1: Fault Injection Subsystem
-  ┌──────────────────────────────────────────────────────────────────────────────────────────────┐
-  │                                                                                               │
-  │   ┌──────────────────────┐                                                                    │
-  │   │   Layer 4            │                                                                    │
-  │   │ (Control Layer)      │                                                                    │
-  │   └──────────┬───────────┘                                                                    │
-  │              │ fault_type, duration, target_clock, trigger, recovery_en                       │
-  │              ▼                                                                                │
+                      Layer 1: Fault Injection Subsystem
+┌──────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                               │
+│   ┌──────────────────────┐                                                                    │
+│   │   Layer 4            │                                                                    │
+│   │ (Control Layer)      │                                                                    │
+│   └──────────┬───────────┘                                                                    │
+│              │ fault_type, duration, target_clock, trigger, recovery_en                       │
+│              ▼                                                                                │
 │   ┌──────────────────────┐      start_fault      ┌──────────────────────────────┐            │
 │   │  fault_controller    │──────────────────────►│     fault_sequencer          │            │
 │   │                      │                       │                              │            │
@@ -51,15 +51,21 @@ Layer 1: Fault Injection Subsystem
 │   │  - Register Map      │   fault_active,       │  - Duration counter          │            │
 │   └──────────┬───────────┘   fault_done          └──────────────────────────────┘            │
 │              │                                                                                 │
-│              │ fault_type_reg, duration_reg, (recovery_enable --clean out or not)              │
+│              │ fault_type_reg, duration_reg, recovery_enable                                  │
+│              │                                                                                 │
+│              │                              fault_active                                     │
+│              │───────────────────────────────────────────────────────────────────────────────│
 │              ▼                                                                                 │
 │   ┌───────────────────────────────────────────────────────────────────────────────────────┐  │
 │   │                              clock_fault_generator                                    │  │
 │   │                                                                                       │  │
+│   │   Inputs: clk_clean, fault_type_reg, duration_reg, start_fault, recovery_enable,      │  │
+│   │           fault_active                                                                │  │
+│   │                                                                                       │  │
 │   │   ┌──────────────┐   ┌──────────────┐   ┌──────────────┐   ┌──────────────┐          │  │
 │   │   │ stop_high    │   │ stop_low     │   │ missing_     │   │ duty_        │          │  │
 │   │   │ _logic       │   │ _logic       │   │ pulse_logic  │   │ distortion   │          │  │
-│   │   └──────────────┘   └──────────────┘   └──────────────┘   └──────────────┘          │ <------ clean_clock
+│   │   └──────────────┘   └──────────────┘   └──────────────┘   └──────────────┘          │  │
 │   │                                                                                       │  │
 │   │   ┌──────────────┐   ┌──────────────┐                                                 │  │
 │   │   │ jitter_      │   │ recovery_    │                                                 │  │
